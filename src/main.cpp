@@ -42,5 +42,8 @@ int main(){
     std::cout<<"Tren4:\n";
     tren4.sterge_vagon(2);
     tren4.afisare();
+    std::cout<<"Tren4:\n";
+    tren4.schimba_ruta("Timisoara->Cluj",15);
+    tren4.afisare();
     return 0;
 }
