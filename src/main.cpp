@@ -16,7 +16,7 @@ int main(){
     Tren tren2=Tren(tren1);
     tren2.afisare();
     std::cout<<"Tren 3<-Tren2\n";
-    Tren tren3=std::move(tren2);
+    Tren tren3(std::move(tren2));
     std::cout<<"Tren2:\n";
     tren2.afisare();
     std::cout<<"Tren3:\n";
