@@ -4,6 +4,5 @@ target_link_libraries(tren_marfa PUBLIC tren)
 
 target_include_directories(
                             tren_marfa PUBLIC
-                           "${PROJECT_BINARY_DIR}"
-                           "${PROJECT_SOURCE_DIR}/Tren"
+                           ../Tren/
 )

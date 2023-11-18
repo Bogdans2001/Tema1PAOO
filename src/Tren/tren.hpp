@@ -11,7 +11,7 @@ class Tren
         Tren(char *ruta, int dimensiune_ruta, int nr_vagoane, int *numere_vagoane);
         Tren(const Tren& vechi);
         Tren(Tren&& tren);
-        ~Tren();
+        virtual ~Tren();
         void adauga_vagon(int numar_vagon);
         void schimba_ruta(char *ruta_noua, int dimensiune_ruta);
         void sterge_vagon(int numar_vagon);
