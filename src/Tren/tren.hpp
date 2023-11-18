@@ -1,6 +1,6 @@
 class Tren
 {
-    private:
+    protected:
         int dimensiune_ruta;
         char *ruta;
         int nr_vagoane;

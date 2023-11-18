@@ -1,0 +1,1 @@
+add_library(tren_calatori tren_calatori.cpp)
