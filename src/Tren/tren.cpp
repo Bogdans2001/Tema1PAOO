@@ -4,7 +4,16 @@
 
 using namespace Vehicul;
 
-//Consturctorul
+//Constructor no-arg
+Tren::Tren(){
+    std::cout<<"Constructorul no-arg a fost apelat\n";
+    this->dimensiune_ruta=-1;
+    this->ruta=nullptr;
+    this->numere_vagoane=nullptr;
+    this->nr_vagoane=0;
+}
+
+//Constructorul
 Tren::Tren(char *ruta, int dimensiune_ruta, int nr_vagoane, int *numere_vagoane){
     std::cout<<"Constructorul a fost apelat\n";
     this->nr_vagoane=nr_vagoane;
@@ -66,9 +75,7 @@ Tren& Tren::operator=(const Tren& vechi){
         delete[] this->numere_vagoane;
         this->numere_vagoane=new int[this->nr_vagoane];
     }
-    if(strcmp(this->ruta,vechi.ruta) !=0 ){
-        strcpy(this->ruta,vechi.ruta);
-    }
+    strcpy(this->ruta,vechi.ruta);
     for(int i=0;i<this->nr_vagoane;i++){
         this->numere_vagoane[i]=vechi.numere_vagoane[i];
     }
@@ -81,6 +88,8 @@ Tren& Tren::operator=(Tren&& vechi){
     if(this==&vechi) {
         return *this;
     }
+    delete[] this->ruta;
+    delete[] this->numere_vagoane;
     this->dimensiune_ruta=vechi.dimensiune_ruta;
     this->ruta=vechi.ruta;
     this->nr_vagoane=vechi.nr_vagoane;
@@ -152,7 +161,6 @@ bool Tren::adauga_vagon(int numar_vagon){
         aux[i]=this->numere_vagoane[i];
     }
     delete[] this->numere_vagoane;
-    this->numere_vagoane=new int[this->nr_vagoane+1];
     aux[this->nr_vagoane]=numar_vagon;
     this->numere_vagoane=aux;
     this->nr_vagoane++;
@@ -189,7 +197,6 @@ bool Tren::sterge_vagon(int numar_vagon){
         aux[i]=this->numere_vagoane[i];
     }
     delete[] this->numere_vagoane;
-    this->numere_vagoane=new int[this->nr_vagoane];
     this->numere_vagoane=aux;
     std::cout<<"Vagonul "<<numar_vagon<<" a fost sters\n";
     return 1;

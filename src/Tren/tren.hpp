@@ -12,6 +12,7 @@ namespace Vehicul{
             bool find(int numar_vagon);
             bool find_sterge(int numar_vagon);
         public:
+            Tren();
             Tren(char *ruta, int dimensiune_ruta, int nr_vagoane, int *numere_vagoane);
             Tren(const Tren& vechi);
             Tren(Tren&& tren);
