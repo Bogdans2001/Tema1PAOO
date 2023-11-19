@@ -2,6 +2,8 @@
 #include<string.h>
 #include "tren.hpp"
 
+using namespace Vehicul;
+
 //Consturctorul
 Tren::Tren(char *ruta, int dimensiune_ruta, int nr_vagoane, int *numere_vagoane){
     std::cout<<"Constructorul a fost apelat\n";

@@ -2,6 +2,7 @@
 #include<string.h>
 #include "tren_marfa.hpp"
 
+using namespace Vehicul;
 
 //Constructor
 Tren_Marfa::Tren_Marfa(char *ruta, int dimensiune_ruta, int nr_vagoane, int *numere_vagoane, int cantitate, char* produs, int dimensiune_produs) 

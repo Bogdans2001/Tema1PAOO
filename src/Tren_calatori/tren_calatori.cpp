@@ -2,6 +2,7 @@
 #include<string.h>
 #include "tren_calatori.hpp"
 
+using namespace Vehicul;
 
 //Constructor
 Tren_Calatori::Tren_Calatori(char *ruta, int dimensiune_ruta, int nr_vagoane, int *numere_vagoane, int nr_calatori) 
