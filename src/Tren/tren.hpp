@@ -1,4 +1,7 @@
-class Tren
+#include "VehiculeSine.hpp"
+using namespace Vehicul;
+
+class Tren : VehiculSine
 {
     protected:
         int dimensiune_ruta;
