@@ -2,22 +2,62 @@
 #include<string.h>
 #include "tren_calatori.hpp"
 
+
+//Constructor
 Tren_Calatori::Tren_Calatori(char *ruta, int dimensiune_ruta, int nr_vagoane, int *numere_vagoane, int nr_calatori) 
     : Tren(ruta, dimensiune_ruta, nr_vagoane, numere_vagoane) {
         this->nr_calatori=nr_calatori;
     }
 
+//Destructor
 Tren_Calatori::~Tren_Calatori(){}
 
+
+//Copy constructor
 Tren_Calatori::Tren_Calatori(const Tren_Calatori& vechi)
     : Tren(vechi){
         this->nr_calatori=vechi.nr_calatori;
 }
 
+
+//Move constructor
 Tren_Calatori::Tren_Calatori(Tren_Calatori&& vechi)
     : Tren(std::move(vechi)){
         this->nr_calatori=vechi.nr_calatori;
         vechi.nr_calatori=0;
+}
+
+//Copy assignment
+Tren_Calatori& Tren_Calatori::operator=(const Tren_Calatori& vechi){
+    if(this==&vechi) {
+        return *this;
+    }
+    Tren::operator=(vechi);
+    this->nr_calatori=vechi.nr_calatori;
+    return *this;
+}
+
+
+//Move assignment
+Tren_Calatori& Tren_Calatori::operator=(Tren_Calatori&& vechi){
+    if(this==&vechi) {
+        return *this;
+    }
+    Tren::operator=(std::move(vechi));
+    this->nr_calatori=vechi.nr_calatori;
+    vechi.nr_calatori=0;
+    return *this;
+}
+
+
+bool Tren_Calatori::operator==(const Tren_Calatori& vechi){
+    if(Tren::operator==(vechi) == 0){
+        return 0;
+    }
+    if(this->nr_calatori != vechi.nr_calatori){
+        return 0;
+    }
+    return 1;
 }
 
 void Tren_Calatori::adauga_vagon_personalizat(int numar_vagon, int cantitate_vagon){

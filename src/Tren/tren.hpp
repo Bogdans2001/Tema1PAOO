@@ -14,6 +14,9 @@ class Tren : VehiculSine
         Tren(char *ruta, int dimensiune_ruta, int nr_vagoane, int *numere_vagoane);
         Tren(const Tren& vechi);
         Tren(Tren&& tren);
+        Tren& operator=(const Tren& vechi);
+        Tren& operator=(Tren&& vechi);
+        bool operator==(const Tren& vechi);
         virtual ~Tren();
         bool adauga_vagon(int numar_vagon);
         bool sterge_vagon(int numar_vagon);

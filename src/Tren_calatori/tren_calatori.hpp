@@ -7,6 +7,9 @@ class Tren_Calatori: public Tren {
         Tren_Calatori(const Tren_Calatori& vechi);
         Tren_Calatori(Tren_Calatori&& vechi);
         ~Tren_Calatori();
+        Tren_Calatori& operator=(const Tren_Calatori& vechi);
+        Tren_Calatori& operator=(Tren_Calatori&& vechi);
+        bool operator==(const Tren_Calatori& vechi);
         void adauga_vagon_personalizat(int numar_vagon, int cantitate_vagon);
         void sterge_vagon_personalizat(int numar_vagon, int cantitate_vagon);
         void afisare();
