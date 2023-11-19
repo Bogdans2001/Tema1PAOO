@@ -79,16 +79,16 @@ bool Tren::find_sterge(int numar_vagon){
     return check;
 }
 
-void Tren::adauga_vagon(int numar_vagon){
+bool Tren::adauga_vagon(int numar_vagon){
     if(this->ruta==NULL){
         std::cout<<"Nu se poate adauga vagonul, move constructorul a fost apelat pentru acest tren\n";
-        return;
+        return 0;
     }
     bool check;
     check=find(numar_vagon);
     if(check) {
         std::cout<<"Vagonul cu numarul "<<numar_vagon<<" exista deja\n";
-        return;
+        return 0;
     }
     int *aux=new int[this->nr_vagoane+1];
     for(int i=0;i<this->nr_vagoane;i++){
@@ -100,6 +100,7 @@ void Tren::adauga_vagon(int numar_vagon){
     this->numere_vagoane=aux;
     this->nr_vagoane++;
     std::cout<<"Vagonul "<<numar_vagon<<" a fost adaugat\n";
+    return 1;
 }
 
 void Tren::schimba_ruta(char *ruta_noua, int dimensiune_ruta){
@@ -114,15 +115,15 @@ void Tren::schimba_ruta(char *ruta_noua, int dimensiune_ruta){
     std::cout<<"Ruta a fost schimbata\n";
 }
 
-void Tren::sterge_vagon(int numar_vagon){
+bool Tren::sterge_vagon(int numar_vagon){
     if(this->ruta==NULL){
         std::cout<<"Nu se poate sterge vagonul, move constructorul a fost apelat pentru acest tren\n";
-        return;
+        return 0;
     }
     bool checked=find_sterge(numar_vagon);
     if(checked==0) {
         std::cout<<"Vagonul "<<numar_vagon<<" nu exista\n";
-        return;
+        return 0;
     }
     this->nr_vagoane--;
     int *aux;
@@ -134,6 +135,7 @@ void Tren::sterge_vagon(int numar_vagon){
     this->numere_vagoane=new int[this->nr_vagoane];
     this->numere_vagoane=aux;
     std::cout<<"Vagonul "<<numar_vagon<<" a fost sters\n";
+    return 1;
 }
 
 void Tren::afisare(){

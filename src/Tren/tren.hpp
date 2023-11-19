@@ -1,6 +1,9 @@
-class Tren
+#include "VehiculeSine.hpp"
+using namespace Vehicul;
+
+class Tren : VehiculSine
 {
-    private:
+    protected:
         int dimensiune_ruta;
         char *ruta;
         int nr_vagoane;
@@ -11,9 +14,11 @@ class Tren
         Tren(char *ruta, int dimensiune_ruta, int nr_vagoane, int *numere_vagoane);
         Tren(const Tren& vechi);
         Tren(Tren&& tren);
-        ~Tren();
-        void adauga_vagon(int numar_vagon);
+        virtual ~Tren();
+        bool adauga_vagon(int numar_vagon);
+        bool sterge_vagon(int numar_vagon);
+        virtual void adauga_vagon_personalizat(int numar_vagon, int cantitate_vagon)=0;
         void schimba_ruta(char *ruta_noua, int dimensiune_ruta);
-        void sterge_vagon(int numar_vagon);
-        void afisare();
+        virtual void sterge_vagon_personalizat(int numar_vagon, int cantitate_vagon)=0;
+        virtual void afisare();
 };
