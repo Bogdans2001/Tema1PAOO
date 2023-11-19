@@ -79,16 +79,26 @@ Tren& Tren::operator=(Tren&& vechi){
     if(this==&vechi) {
         return *this;
     }
-    delete[] this->numere_vagoane;
-    delete[] this->ruta;
-    this->dimensiune_ruta=vechi.dimensiune_ruta;
-    this->nr_vagoane=this->nr_vagoane;
-    this->numere_vagoane=new int[this->nr_vagoane];
-    this->ruta=new char[this->dimensiune_ruta+1];
+    if(this->dimensiune_ruta != vechi.dimensiune_ruta){
+        this->dimensiune_ruta=vechi.dimensiune_ruta;
+        delete[] this->ruta;
+        this->ruta=new char[this->dimensiune_ruta+1];
+    }
+    if(this->nr_vagoane != vechi.nr_vagoane){
+        this->nr_vagoane=this->nr_vagoane;
+        delete[] this->numere_vagoane;
+        this->numere_vagoane=new int[this->nr_vagoane];
+    }
+    if(strcmp(this->ruta,vechi.ruta) !=0 ){
+        strcpy(this->ruta,vechi.ruta);
+    }
     for(int i=0;i<this->nr_vagoane;i++){
         this->numere_vagoane[i]=vechi.numere_vagoane[i];
     }
-    strcpy(this->ruta, vechi.ruta);
+    vechi.dimensiune_ruta = -1;
+    vechi.nr_vagoane = 0;
+    vechi.ruta=nullptr;
+    vechi.numere_vagoane=nullptr;
     return *this;
 }
 
@@ -102,6 +112,7 @@ bool Tren::operator==(const Tren& vechi){
             return 0;
         }
     }
+    return 1;
 }
 
 bool Tren::find(int numar_vagon) {

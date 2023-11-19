@@ -2,6 +2,8 @@
 #include<string.h>
 #include "tren_marfa.hpp"
 
+
+//Constructor
 Tren_Marfa::Tren_Marfa(char *ruta, int dimensiune_ruta, int nr_vagoane, int *numere_vagoane, int cantitate, char* produs, int dimensiune_produs) 
     : Tren(ruta, dimensiune_ruta, nr_vagoane, numere_vagoane) {
         this->cantitate=cantitate;
@@ -10,10 +12,14 @@ Tren_Marfa::Tren_Marfa(char *ruta, int dimensiune_ruta, int nr_vagoane, int *num
         strcpy(this->produs,produs);
     }
 
+
+//Destructor
 Tren_Marfa::~Tren_Marfa(){
         delete[] this->produs;
 }
 
+
+//Copy constructor
 Tren_Marfa::Tren_Marfa(const Tren_Marfa& vechi)
     : Tren(vechi){
         this->cantitate=vechi.cantitate;
@@ -22,6 +28,7 @@ Tren_Marfa::Tren_Marfa(const Tren_Marfa& vechi)
         strcpy(this->produs,vechi.produs);
 }
 
+//Move constructor
 Tren_Marfa::Tren_Marfa(Tren_Marfa&& vechi)
     : Tren(std::move(vechi)){
         this->cantitate=vechi.cantitate;
@@ -31,6 +38,54 @@ Tren_Marfa::Tren_Marfa(Tren_Marfa&& vechi)
         vechi.produs=nullptr;
         vechi.dimensiune_produs=-1;
         vechi.cantitate=0;
+}
+
+
+//Copy assignment
+Tren_Marfa& Tren_Marfa::operator=(const Tren_Marfa& vechi){
+    if(this==&vechi) {
+        return *this;
+    }
+    Tren::operator=(vechi);
+    this->cantitate=vechi.cantitate;
+    if(this->dimensiune_produs != vechi.dimensiune_produs){
+        this->dimensiune_produs = vechi.dimensiune_produs;
+        delete[] this->produs;
+        this->produs = new char[this->dimensiune_produs+1];
+    }
+    strcpy(this->produs, vechi.produs);
+    return *this;
+}
+
+
+//Move assignment
+Tren_Marfa& Tren_Marfa::operator=(Tren_Marfa&& vechi){
+    if(this==&vechi) {
+        return *this;
+    }
+    Tren::operator=(std::move(vechi));
+    this->cantitate=vechi.cantitate;
+    if(this->dimensiune_produs != vechi.dimensiune_produs){
+        this->dimensiune_produs = vechi.dimensiune_produs;
+        delete[] this->produs;
+        this->produs = new char[this->dimensiune_produs+1];
+    }
+    strcpy(this->produs, vechi.produs);
+    vechi.cantitate=0;
+    vechi.dimensiune_produs=-1;
+    vechi.produs=nullptr;
+    return *this;
+}
+
+
+bool Tren_Marfa::operator==(const Tren_Marfa& vechi){
+    if(Tren::operator==(vechi) == 0){
+        return 0;
+    }
+    if( (this->cantitate != vechi.cantitate) || (this->dimensiune_produs != vechi.dimensiune_produs) || (strcmp(this->produs, vechi.produs) != 0) ){
+        return 0;
+    }
+    return 1;
 }
 
 void Tren_Marfa::adauga_vagon_personalizat(int numar_vagon, int cantitate_vagon){
