@@ -2,10 +2,19 @@
 #include<string.h>
 #include "tren_marfa.hpp"
 
+using namespace Vehicul;
+
+//Constructor no-arg
+Tren_Marfa::Tren_Marfa()
+    : Tren::Tren(){
+        this->produs=nullptr;
+        this->dimensiune_produs=-1;
+        this->cantitate=0;
+}
 
 //Constructor
 Tren_Marfa::Tren_Marfa(char *ruta, int dimensiune_ruta, int nr_vagoane, int *numere_vagoane, int cantitate, char* produs, int dimensiune_produs) 
-    : Tren(ruta, dimensiune_ruta, nr_vagoane, numere_vagoane) {
+    : Tren::Tren(ruta, dimensiune_ruta, nr_vagoane, numere_vagoane) {
         this->cantitate=cantitate;
         this->dimensiune_produs=dimensiune_produs;
         this->produs=new char[this->dimensiune_produs+1];
@@ -21,7 +30,7 @@ Tren_Marfa::~Tren_Marfa(){
 
 //Copy constructor
 Tren_Marfa::Tren_Marfa(const Tren_Marfa& vechi)
-    : Tren(vechi){
+    : Tren::Tren(vechi){
         this->cantitate=vechi.cantitate;
         this->dimensiune_produs=vechi.dimensiune_produs;
         this->produs=new char[this->dimensiune_produs+1];
@@ -30,11 +39,10 @@ Tren_Marfa::Tren_Marfa(const Tren_Marfa& vechi)
 
 //Move constructor
 Tren_Marfa::Tren_Marfa(Tren_Marfa&& vechi)
-    : Tren(std::move(vechi)){
+    : Tren::Tren(std::move(vechi)){
         this->cantitate=vechi.cantitate;
         this->dimensiune_produs=vechi.dimensiune_produs;
-        this->produs=new char[this->dimensiune_produs+1];
-        strcpy(this->produs, vechi.produs);
+        this->produs=vechi.produs;
         vechi.produs=nullptr;
         vechi.dimensiune_produs=-1;
         vechi.cantitate=0;
@@ -64,13 +72,10 @@ Tren_Marfa& Tren_Marfa::operator=(Tren_Marfa&& vechi){
         return *this;
     }
     Tren::operator=(std::move(vechi));
+    delete[] this->produs;
     this->cantitate=vechi.cantitate;
-    if(this->dimensiune_produs != vechi.dimensiune_produs){
-        this->dimensiune_produs = vechi.dimensiune_produs;
-        delete[] this->produs;
-        this->produs = new char[this->dimensiune_produs+1];
-    }
-    strcpy(this->produs, vechi.produs);
+    this->dimensiune_produs=vechi.dimensiune_produs;
+    this->produs = vechi.produs;
     vechi.cantitate=0;
     vechi.dimensiune_produs=-1;
     vechi.produs=nullptr;
@@ -121,6 +126,7 @@ void Tren_Marfa::schimba_produs(char *produs, int dimensiune_produs){
     this->dimensiune_produs=dimensiune_produs;
     this->produs=new char[this->dimensiune_produs+1];
     strcpy(this->produs, produs);
+    std::cout<<"Produsul a fost schimbat\n";
 }
 
 void Tren_Marfa::afisare(){
@@ -128,7 +134,7 @@ void Tren_Marfa::afisare(){
         std::cout<<"Move constructorul a fost apelat pentru acest tren\n";
         return;
     }
-    std::cout<<"Trenul circula pe ruta: "<<this->ruta<<"si transporta "<<this->produs<<"in cantitate de"<<this->cantitate<<"\n";
+    std::cout<<"Trenul circula pe ruta: "<<this->ruta<<" si transporta "<<this->produs<<" in cantitate de "<<this->cantitate<<"\n";
     std::cout<<"Structura: Locomotiva ";
     for(int i=0;i<this->nr_vagoane;i++){
         std::cout<<" <- "<<this->numere_vagoane[i];
