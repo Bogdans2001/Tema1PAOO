@@ -48,6 +48,62 @@ Tren::Tren(Tren&& vechi){
     vechi.dimensiune_ruta=-1;
 }
 
+//Copy assignment
+Tren& Tren::operator=(const Tren& vechi){
+    std::cout<<"Copy assignment a fost apelat\n";
+    if(this==&vechi) {
+        return *this;
+    }
+    if(this->dimensiune_ruta != vechi.dimensiune_ruta){
+        this->dimensiune_ruta=vechi.dimensiune_ruta;
+        delete[] this->ruta;
+        this->ruta=new char[this->dimensiune_ruta+1];
+    }
+    if(this->nr_vagoane != vechi.nr_vagoane){
+        this->nr_vagoane=this->nr_vagoane;
+        delete[] this->numere_vagoane;
+        this->numere_vagoane=new int[this->nr_vagoane];
+    }
+    if(strcmp(this->ruta,vechi.ruta) !=0 ){
+        strcpy(this->ruta,vechi.ruta);
+    }
+    for(int i=0;i<this->nr_vagoane;i++){
+        this->numere_vagoane[i]=vechi.numere_vagoane[i];
+    }
+    return *this;
+}
+
+//Move assignment
+Tren& Tren::operator=(Tren&& vechi){
+    std::cout<<"Move assignment a fost apelat\n";
+    if(this==&vechi) {
+        return *this;
+    }
+    delete[] this->numere_vagoane;
+    delete[] this->ruta;
+    this->dimensiune_ruta=vechi.dimensiune_ruta;
+    this->nr_vagoane=this->nr_vagoane;
+    this->numere_vagoane=new int[this->nr_vagoane];
+    this->ruta=new char[this->dimensiune_ruta+1];
+    for(int i=0;i<this->nr_vagoane;i++){
+        this->numere_vagoane[i]=vechi.numere_vagoane[i];
+    }
+    strcpy(this->ruta, vechi.ruta);
+    return *this;
+}
+
+bool Tren::operator==(const Tren& vechi){
+    if( (this->dimensiune_ruta!=vechi.dimensiune_ruta) || (this->nr_vagoane!=this->nr_vagoane) || (strcmp(this->ruta,vechi.ruta) !=0 ) ) {
+        return 0;
+    }
+
+    for(int i=0;i<this->nr_vagoane;i++) {
+        if(this->numere_vagoane[i] != vechi.numere_vagoane[i]) {
+            return 0;
+        }
+    }
+}
+
 bool Tren::find(int numar_vagon) {
     bool check=0;
     for(int i=0;i<this->nr_vagoane;i++){
