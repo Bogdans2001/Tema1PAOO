@@ -12,8 +12,10 @@ class Tren
         Tren(const Tren& vechi);
         Tren(Tren&& tren);
         virtual ~Tren();
-        void adauga_vagon(int numar_vagon);
+        bool adauga_vagon(int numar_vagon);
+        bool sterge_vagon(int numar_vagon);
+        virtual void adauga_vagon_personalizat(int numar_vagon, int cantitate_vagon)=0;
         void schimba_ruta(char *ruta_noua, int dimensiune_ruta);
-        void sterge_vagon(int numar_vagon);
-        void afisare();
+        virtual void sterge_vagon_personalizat(int numar_vagon, int cantitate_vagon)=0;
+        virtual void afisare();
 };

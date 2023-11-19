@@ -9,9 +9,8 @@ class Tren_Marfa : public Tren {
         Tren_Marfa(const Tren_Marfa& vechi);
         Tren_Marfa(Tren_Marfa&& vechi);
         ~Tren_Marfa();
-        void adauga_vagon(int numar_vagon, int cantitate_vagon);
-        //void schimba_ruta(char *ruta_noua, int dimensiune_ruta);
-        void sterge_vagon(int numar_vagon, int cantitate_vagon);
-        void schimba_produs(char produs[20]);
+        void adauga_vagon_personalizat(int numar_vagon, int cantitate_vagon);
+        void sterge_vagon_personalizat(int numar_vagon, int cantitate_vagon);
+        void schimba_produs(char *produs, int dimensiune_produs);
         void afisare();
 };
