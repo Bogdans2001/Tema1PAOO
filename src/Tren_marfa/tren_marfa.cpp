@@ -34,8 +34,7 @@ Tren_Marfa::Tren_Marfa(Tren_Marfa&& vechi)
     : Tren(std::move(vechi)){
         this->cantitate=vechi.cantitate;
         this->dimensiune_produs=vechi.dimensiune_produs;
-        this->produs=new char[this->dimensiune_produs+1];
-        strcpy(this->produs, vechi.produs);
+        this->produs=vechi.produs;
         vechi.produs=nullptr;
         vechi.dimensiune_produs=-1;
         vechi.cantitate=0;
@@ -66,12 +65,8 @@ Tren_Marfa& Tren_Marfa::operator=(Tren_Marfa&& vechi){
     }
     Tren::operator=(std::move(vechi));
     this->cantitate=vechi.cantitate;
-    if(this->dimensiune_produs != vechi.dimensiune_produs){
-        this->dimensiune_produs = vechi.dimensiune_produs;
-        delete[] this->produs;
-        this->produs = new char[this->dimensiune_produs+1];
-    }
-    strcpy(this->produs, vechi.produs);
+    this->dimensiune_produs=vechi.dimensiune_produs;
+    this->produs = vechi.produs;
     vechi.cantitate=0;
     vechi.dimensiune_produs=-1;
     vechi.produs=nullptr;

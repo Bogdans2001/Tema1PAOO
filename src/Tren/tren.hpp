@@ -1,3 +1,4 @@
+#pragma once
 #include "VehiculeSine.hpp"
 
 namespace Vehicul{

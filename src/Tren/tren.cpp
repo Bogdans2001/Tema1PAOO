@@ -81,22 +81,10 @@ Tren& Tren::operator=(Tren&& vechi){
     if(this==&vechi) {
         return *this;
     }
-    if(this->dimensiune_ruta != vechi.dimensiune_ruta){
-        this->dimensiune_ruta=vechi.dimensiune_ruta;
-        delete[] this->ruta;
-        this->ruta=new char[this->dimensiune_ruta+1];
-    }
-    if(this->nr_vagoane != vechi.nr_vagoane){
-        this->nr_vagoane=this->nr_vagoane;
-        delete[] this->numere_vagoane;
-        this->numere_vagoane=new int[this->nr_vagoane];
-    }
-    if(strcmp(this->ruta,vechi.ruta) !=0 ){
-        strcpy(this->ruta,vechi.ruta);
-    }
-    for(int i=0;i<this->nr_vagoane;i++){
-        this->numere_vagoane[i]=vechi.numere_vagoane[i];
-    }
+    this->dimensiune_ruta=vechi.dimensiune_ruta;
+    this->ruta=vechi.ruta;
+    this->nr_vagoane=vechi.nr_vagoane;
+    this->numere_vagoane=vechi.numere_vagoane;
     vechi.dimensiune_ruta = -1;
     vechi.nr_vagoane = 0;
     vechi.ruta=nullptr;
