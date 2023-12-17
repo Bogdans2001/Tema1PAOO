@@ -2,8 +2,6 @@
 #include<string>
 #include "tren.hpp"
 
-using namespace Vehicul;
-
 //Constructor no-arg
 Tren::Tren(){
     std::cout<<"Constructorul no-arg a fost apelat\n";
@@ -31,20 +29,20 @@ Tren::~Tren(){
 
 
 
-bool Tren::parcurgere(std::shared_ptr<Numar_vagon> node){
-    std::shared_ptr<Numar_vagon> p = std::make_shared<Numar_vagon>();
-    p = node;
-    while(p->next != nullptr){
-        std::cout<<" <- "<<p->numar_vagon<<" <- " << p->numar_transport;
+bool Tren::parcurgere(){
+    std::shared_ptr<Numar_vagon> p;
+    p = this->numere_vagoane;
+    while(p != nullptr){
+        std::cout<<" <- ("<<p->numar_vagon<<" <- " << p->numar_transport<<") ";
         p=p->next;
     }
     return 0;
 }
 
 
-bool Tren::find(int vagon, std::shared_ptr<Numar_vagon> nr_vagon) {
-    std::shared_ptr<Numar_vagon> p = std::make_shared<Numar_vagon>();
-    p=nr_vagon;
+bool Tren::find(int vagon) {
+    std::shared_ptr<Numar_vagon> p;
+    p=this->numere_vagoane;
     while(p != nullptr){
         if(p->numar_vagon==vagon){
             return 1;
@@ -60,10 +58,14 @@ bool Tren::find(int vagon, std::shared_ptr<Numar_vagon> nr_vagon) {
 void Tren::adauga_vagon(Numar_transport node_values){
     std::shared_ptr<Numar_vagon> p = this->numere_vagoane;
     std::shared_ptr<Numar_vagon> node = std::make_shared<Numar_vagon>();
+    if(find(node_values.numar_vagon)){
+        std::cout<< "Vagonul exista\n";
+        return;
+    }
     node->numar_vagon = node_values.numar_vagon;
     node->numar_transport = node_values.numar_transport;
     node->next=nullptr;
-    if(!p) {
+    if(p->numar_vagon==0) {
         this->numere_vagoane = node;
         return;
     }
@@ -73,11 +75,16 @@ void Tren::adauga_vagon(Numar_transport node_values){
     p->next=node;
 }
 
-void Tren::sterge_vagon(Numar_transport node_values){
-    std::shared_ptr<Numar_vagon> p = std::make_shared<Numar_vagon>();
-    std::shared_ptr<Numar_vagon> q = std::make_shared<Numar_vagon>();
+void Tren::sterge_vagon(int node_value){
+    std::shared_ptr<Numar_vagon> p;
+    std::shared_ptr<Numar_vagon> q;
     p = this->numere_vagoane;
     q = p->next;
+
+    if(!find(node_value)){
+        std::cout<< "Vagonul nu exista\n";
+        return;
+    }
 
     if(!p) {
         return;
@@ -88,13 +95,13 @@ void Tren::sterge_vagon(Numar_transport node_values){
         return;
     }
 
-    if(p->numar_vagon == node_values.numar_vagon && p->numar_transport == node_values.numar_transport){
+    if(p->numar_vagon == node_value){
         this->numere_vagoane=q;
         return;
     }
 
-    while(q->next != nullptr){
-        if(q->numar_vagon == node_values.numar_vagon && q->numar_transport == node_values.numar_transport) {
+    while(q != nullptr){
+        if(q->numar_vagon == node_value) {
             p->next = q->next;
             break;
         }
@@ -104,12 +111,8 @@ void Tren::sterge_vagon(Numar_transport node_values){
 }
 
 void Tren::afisare(){
-    if(this->ruta==NULL){
-        std::cout<<"Move constructorul a fost apelat pentru acest tren\n";
-        return;
-    }
     std::cout<<"Trenul circula pe ruta: "<<*(this->ruta)<<"\n";
     std::cout<<"Structura: Locomotiva ";
-    parcurgere(this->numere_vagoane);
+    parcurgere();
     std::cout<<"\n";
 }
