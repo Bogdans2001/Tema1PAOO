@@ -22,8 +22,11 @@ class Tren
         bool parcurgere();
     public:
         Tren();
-        Tren(std::string ruta, Numar_transport *numere_vagoane);
+        Tren(std::string ruta, int nr_vagoane, Numar_transport *numere_vagoane);
+        Tren(const Tren& vechi);
         virtual ~Tren();
+        int calculeaza_transport();
+        void parcurgere_copy(std::shared_ptr<Numar_vagon> old);
         void adauga_vagon(Numar_transport node_values);
         void sterge_vagon(int node_value);
         virtual void afisare();

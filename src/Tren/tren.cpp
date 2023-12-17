@@ -11,7 +11,7 @@ Tren::Tren(){
 }
 
 //Constructorul
-Tren::Tren(std::string ruta, Numar_transport *numere_vagoane){
+Tren::Tren(std::string ruta, int nr_vagoane, Numar_transport *numere_vagoane){
     std::cout<<"Constructorul a fost apelat\n";
     this->nr_vagoane=nr_vagoane;
     this->numere_vagoane=std::make_shared<Numar_vagon>();
@@ -21,12 +21,35 @@ Tren::Tren(std::string ruta, Numar_transport *numere_vagoane){
     this->ruta=std::make_unique<std::string>(ruta);
 }
 
+Tren::Tren(const Tren& vechi){
+    this->nr_vagoane = vechi.nr_vagoane;
+    this->ruta=std::make_unique<std::string>(*(vechi.ruta));
+    parcurgere_copy(vechi.numere_vagoane);
+}
+
+
 //Destructorul
 Tren::~Tren(){
     std::cout<<"Destructorul a fost apelat\n";
 }
 
-
+void Tren::parcurgere_copy(std::shared_ptr<Numar_vagon> old){
+    std::shared_ptr<Numar_vagon> p1;
+    this->numere_vagoane=std::make_shared<Numar_vagon>();
+    p1=this->numere_vagoane;
+    while(old != nullptr){
+        p1->numar_vagon = old->numar_vagon;
+        p1->numar_transport = old->numar_transport;
+        if(old->next != nullptr) {
+            p1->next=std::make_shared<Numar_vagon>();
+        }
+        else {
+            p1->next = nullptr;
+        }
+        old = old->next;
+        p1=p1->next;
+    }
+}
 
 
 bool Tren::parcurgere(){
@@ -40,6 +63,16 @@ bool Tren::parcurgere(){
 }
 
 
+int Tren::calculeaza_transport(){
+    std::shared_ptr<Numar_vagon> p = this->numere_vagoane;
+    int s=0;
+    while(p != nullptr){
+        s=s+p->numar_transport;
+        p=p->next;
+    }
+    return s;
+}
+
 bool Tren::find(int vagon) {
     std::shared_ptr<Numar_vagon> p;
     p=this->numere_vagoane;
@@ -52,8 +85,6 @@ bool Tren::find(int vagon) {
     return 0;
 }
 
-//cautam o valoare in vector, daca o gasim, o mutam la final, functia va ajuta in cadrul metodei sterge_vagon
-//Va fi mai usor de sters vagonul daca se afla pe ultima pozitie
 
 void Tren::adauga_vagon(Numar_transport node_values){
     std::shared_ptr<Numar_vagon> p = this->numere_vagoane;
@@ -92,11 +123,13 @@ void Tren::sterge_vagon(int node_value){
 
     if(!q) {
         this->numere_vagoane = nullptr;
+
         return;
     }
 
     if(p->numar_vagon == node_value){
         this->numere_vagoane=q;
+
         return;
     }
 
