@@ -8,22 +8,19 @@ using namespace Vehicul;
 Tren_Calatori::Tren_Calatori()
     : Tren::Tren(){
         this->nr_calatori=0;
-        this->confort=nullptr;
-        this->dimensiune_confort=-1;
+        this->confort=std::make_shared<std::string>();
 }
 
 //Constructor
-Tren_Calatori::Tren_Calatori(std::string ruta, int nr_vagoane, int *numere_vagoane, int nr_calatori, char *confort, int dimensiune_confort) 
+Tren_Calatori::Tren_Calatori(std::string ruta, int nr_vagoane, int *numere_vagoane, int nr_calatori, std::shared_ptr<std::string> confort) 
     : Tren::Tren(ruta, nr_vagoane, numere_vagoane) {
         this->nr_calatori=nr_calatori;
-        this->dimensiune_confort=dimensiune_confort;
-        this->confort=new char[this->dimensiune_confort+1];
-        strcpy(this->confort,confort);
+        this->confort=std::make_shared<std::string>();
+        this->confort = confort;
     }
 
 //Destructor
 Tren_Calatori::~Tren_Calatori(){
-    delete[] this->confort;
 }
 
 
@@ -31,9 +28,8 @@ Tren_Calatori::~Tren_Calatori(){
 Tren_Calatori::Tren_Calatori(const Tren_Calatori& vechi)
     : Tren::Tren(vechi){
         this->nr_calatori=vechi.nr_calatori;
-        this->dimensiune_confort=vechi.dimensiune_confort;
-        this->confort=new char[this->dimensiune_confort+1];
-        strcpy(this->confort,vechi.confort);
+        this->confort=std::make_shared<std::string>();
+        this->confort = confort;
 }
 
 
@@ -41,10 +37,8 @@ Tren_Calatori::Tren_Calatori(const Tren_Calatori& vechi)
 Tren_Calatori::Tren_Calatori(Tren_Calatori&& vechi)
     : Tren::Tren(std::move(vechi)){
         this->nr_calatori=vechi.nr_calatori;
-        this->dimensiune_confort=vechi.dimensiune_confort;
-        this->confort=vechi.confort;
-        vechi.confort=nullptr;
-        vechi.dimensiune_confort=-1;
+        this->confort=std::make_shared<std::string>();
+        this->confort = confort;
         vechi.nr_calatori=0;
 }
 
@@ -54,13 +48,8 @@ Tren_Calatori& Tren_Calatori::operator=(const Tren_Calatori& vechi){
         return *this;
     }
     Tren::operator=(vechi);
-    if(this->dimensiune_confort != vechi.dimensiune_confort){
-        this->dimensiune_confort=vechi.dimensiune_confort;
-        delete[] this->confort;
-        this->confort=new char[this->dimensiune_confort+1];
-    }
     this->nr_calatori=vechi.nr_calatori;
-    strcpy(this->confort,vechi.confort);
+    this->confort = vechi.confort;
     return *this;
 }
 
@@ -71,13 +60,9 @@ Tren_Calatori& Tren_Calatori::operator=(Tren_Calatori&& vechi){
         return *this;
     }
     Tren::operator=(std::move(vechi));
-    delete[] this->confort;
-    this->dimensiune_confort=vechi.dimensiune_confort;
     this->confort=vechi.confort;
     this->nr_calatori=vechi.nr_calatori;
     vechi.nr_calatori=0;
-    vechi.dimensiune_confort=-1;
-    vechi.confort=nullptr;
     return *this;
 }
 
@@ -86,7 +71,7 @@ bool Tren_Calatori::operator==(const Tren_Calatori& vechi){
     if(Tren::operator==(vechi) == 0){
         return 0;
     }
-    if( (this->nr_calatori != vechi.nr_calatori) || (this->dimensiune_confort != vechi.dimensiune_confort) || (strcmp(this->confort, vechi.confort) != 0) ){
+    if( (this->nr_calatori != vechi.nr_calatori) || ( *(this->ruta) == *(vechi.ruta) ) ){
         return 0;
     }
     return 1;
@@ -115,13 +100,8 @@ void Tren_Calatori::sterge_vagon_personalizat(int numar_vagon, int cantitate_vag
     this->nr_calatori=diferenta_cantitate;
 }
 
-void Tren_Calatori::schimba_confort(char *confort, int dimensiune_confort){
-    if(this->dimensiune_confort != dimensiune_confort){
-        this->dimensiune_confort=dimensiune_confort;
-        delete[] this->confort;
-        this->confort=new char[this->dimensiune_confort+1];
-    }
-    strcpy(this->confort, confort);
+void Tren_Calatori::schimba_confort(std::shared_ptr<std::string> confort){
+    this->confort = confort;
     std::cout<<"Confortul a fost schimbat\n";
 }
 
@@ -130,7 +110,7 @@ void Tren_Calatori::afisare(){
         std::cout<<"Move constructorul a fost apelat pentru acest tren\n";
         return;
     }
-    std::cout<<"Trenul de tip "<<this->confort<<" circula pe ruta: "<<*(this->ruta)<<" avand un numar de "<<this->nr_calatori<<" calatori\n";
+    std::cout<<"Trenul de tip "<<*(this->confort)<<" circula pe ruta: "<<*(this->ruta)<<" avand un numar de "<<this->nr_calatori<<" calatori\n";
     std::cout<<"Structura: Locomotiva ";
     for(int i=0;i<this->nr_vagoane;i++){
         std::cout<<" <- "<<this->numere_vagoane[i];

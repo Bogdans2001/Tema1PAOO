@@ -58,16 +58,16 @@ int main(){
     std::cout<<"\n\nConstructorii subclasei tren_calatori:\n\n";
 
 
-    /*Vehicul::Tren_Calatori tren_calatori4;
-    Vehicul::Tren_Calatori tren_calatori1=Vehicul::Tren_Calatori(ruta1, nr_vagoane1, numere_vagoane1, 100, confort1, 5);
+    Vehicul::Tren_Calatori tren_calatori4;
+    Vehicul::Tren_Calatori tren_calatori1=Vehicul::Tren_Calatori(ruta1, nr_vagoane1, numere_vagoane1, 100, confort1);
     tren_calatori1.afisare();
     Vehicul::Tren_Calatori tren_calatori2=Vehicul::Tren_Calatori(tren_calatori1);
     tren_calatori2.afisare();
-    Vehicul::Tren_Calatori tren_calatori3=Vehicul::Tren_Calatori(ruta2, nr_vagoane1, numere_vagoane1, 200, confort2, 8);
+    Vehicul::Tren_Calatori tren_calatori3=Vehicul::Tren_Calatori(ruta2, nr_vagoane1, numere_vagoane1, 200, confort2);
     tren_calatori3.afisare();
     tren_calatori1=tren_calatori3;
     tren_calatori3.afisare();
-    tren_calatori4=Vehicul::Tren_Calatori(ruta3, nr_vagoane1, numere_vagoane1, 250, confort3, 9);
+    tren_calatori4=Vehicul::Tren_Calatori(ruta3, nr_vagoane1, numere_vagoane1, 250, confort3);
     tren_calatori4.afisare();
 
 
@@ -77,9 +77,9 @@ int main(){
     tren_calatori4.adauga_vagon_personalizat(6,10);
     tren_calatori4.afisare();
     tren_calatori4.afisare();
-    tren_calatori4.schimba_confort(confort1, 5);
+    tren_calatori4.schimba_confort(confort1);
     tren_calatori4.afisare();
     tren_calatori4.sterge_vagon_personalizat(6,10);
     tren_calatori4.afisare();
-    */return 0;
+    return 0;
 }
