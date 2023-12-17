@@ -4,7 +4,6 @@
 
 //Constructor no-arg
 Tren::Tren(){
-    std::cout<<"Constructorul no-arg a fost apelat\n";
     this->ruta=std::make_unique<std::string>();
     this->numere_vagoane=std::make_shared<Numar_vagon>();
     this->nr_vagoane=0;
@@ -12,7 +11,6 @@ Tren::Tren(){
 
 //Constructorul
 Tren::Tren(std::string ruta, int nr_vagoane, Numar_transport *numere_vagoane){
-    std::cout<<"Constructorul a fost apelat\n";
     this->nr_vagoane=nr_vagoane;
     this->numere_vagoane=std::make_shared<Numar_vagon>();
     for(int i=0;i<this->nr_vagoane;i++){
@@ -30,7 +28,6 @@ Tren::Tren(const Tren& vechi){
 
 //Destructorul
 Tren::~Tren(){
-    std::cout<<"Destructorul a fost apelat\n";
 }
 
 void Tren::parcurgere_copy(std::shared_ptr<Numar_vagon> old){

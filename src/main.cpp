@@ -8,7 +8,7 @@
 #include<array>
 #include "tren.hpp"
 
-int numar_cutii;
+int numar_cutii, s[100], s_total;
 std::string ruta1 = "Bucuresti-Timisoara";
 std::string ruta2 = "Bucuresti-Constanta";
 std::string ruta3 = "Timisoara-Cluj";
@@ -29,6 +29,7 @@ int lista_vagoane[] = {433, 1, 3, 4, 7};
 
 const auto nr_threads = std::thread::hardware_concurrency();
 
+std::barrier my_barrier(nr_threads);
 
 std::vector<Tren> tren = {
         Tren(ruta1, 6, numere_vagoane1),
@@ -47,20 +48,34 @@ std::vector<Tren> tren = {
 std::mutex my_mutex;
 
 void sterge_actualizeaza(int i, int length, int *lista_vagoane, int length_lista){
-    int start, end,s;
+    int start, end;
     start=i*length/nr_threads;
     end = (i+1)*length/nr_threads;
     for(int k=start;k<end;k++){
-        my_mutex.lock();
-        std::cout<<length_lista<<"\n";
         for(int p=0;p<length_lista;p++){
             tren[k].sterge_vagon(lista_vagoane[p]);
         }
+    }
 
-        s=tren[k].calculeaza_transport();
-        std::cout<<"Thread "<<i<<" Trenul "<<k<<" transporta "<<s<<" cutii\n";
+    for(int k=start;k<end;k++){
+        s[k]=tren[k].calculeaza_transport();
+        std::cout<<"Thread "<<i<<" Trenul "<<k<<" transporta "<<s[k]<<" cutii\n";
+    }
 
-        my_mutex.unlock();
+    int maxx=0;
+    for(int k=start; k<end; k++){
+        if(s[k]>maxx) {
+            maxx=s[k];
+        }
+    }
+
+    my_barrier.arrive_and_wait();
+
+    std::cout<<"Nr_max de cutii pentru thread-ul "<<i<<" este "<<maxx<<"\n";
+
+    for(int k=start; k<end;k++){
+        std::lock_guard<std::mutex> guard(my_mutex);
+        s_total=s_total+s[k];
     }
 }
 
@@ -91,5 +106,6 @@ int main(){
     for(int i = 0; i<nr_threads; i++){
         threads[i].join();
     }
+    std::cout<<"Numar total de cutii este "<<s_total<<"\n";
     return 0;
 }
