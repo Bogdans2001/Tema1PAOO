@@ -23,7 +23,7 @@ int main(){
     *confort1="Rapid";
     *confort2="Personal"; 
     *confort3="Accelerat";
-    int numere_vagoane1[]={434,433,4,3,2,1}, numere_vagoane2[]={1,2,3,4};
+    Vehicul::Numar_transport numere_vagoane1[]={ {434, 80} , {433, 79}, {4, 78},{3, 77},{2, 76},{1, 75}}, numere_vagoane2[]={ {1, 82}, {2, 83}, {3, 85}, {4, 87}};
     int nr_vagoane1=6, nr_vagoane2=4;
 
 
