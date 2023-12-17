@@ -1,13 +1,15 @@
 #include "tren.hpp"
+#include<string>
+#include<cstring>
+
 namespace Vehicul{
     class Tren_Marfa : public Tren {
         private:
             int cantitate;
-            char *produs;
-            int dimensiune_produs;
+            std::shared_ptr<std::string> produs;
         public: 
             Tren_Marfa();
-            Tren_Marfa(char *ruta, int dimensiune_ruta, int nr_vagoane, int *numere_vagoane, int cantitate, char *produs, int dimensiune_produs);
+            Tren_Marfa(std::string ruta, int nr_vagoane, int *numere_vagoane, int cantitate, std::shared_ptr<std::string> produs);
             Tren_Marfa(const Tren_Marfa& vechi);
             Tren_Marfa(Tren_Marfa&& vechi);
             ~Tren_Marfa();
@@ -16,7 +18,7 @@ namespace Vehicul{
             bool operator==(const Tren_Marfa& vechi);
             void adauga_vagon_personalizat(int numar_vagon, int cantitate_vagon);
             void sterge_vagon_personalizat(int numar_vagon, int cantitate_vagon);
-            void schimba_produs(char *produs, int dimensiune_produs);
+            void schimba_produs(std::shared_ptr<std::string> produs);
             void afisare();
     };
 }

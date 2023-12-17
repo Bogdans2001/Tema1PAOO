@@ -1,5 +1,5 @@
 #include<iostream>
-#include<string.h>
+#include<string>
 #include "tren.hpp"
 
 using namespace Vehicul;
@@ -7,56 +7,47 @@ using namespace Vehicul;
 //Constructor no-arg
 Tren::Tren(){
     std::cout<<"Constructorul no-arg a fost apelat\n";
-    this->dimensiune_ruta=-1;
-    this->ruta=nullptr;
+    this->ruta=std::make_unique<std::string>();
     this->numere_vagoane=nullptr;
     this->nr_vagoane=0;
 }
 
 //Constructorul
-Tren::Tren(char *ruta, int dimensiune_ruta, int nr_vagoane, int *numere_vagoane){
+Tren::Tren(std::string ruta, int nr_vagoane, int *numere_vagoane){
     std::cout<<"Constructorul a fost apelat\n";
     this->nr_vagoane=nr_vagoane;
-    this->dimensiune_ruta=dimensiune_ruta;
-    this->numere_vagoane=new int[this->nr_vagoane];
+    this->numere_vagoane=new int[nr_vagoane];
     for(int i=0;i<this->nr_vagoane;i++){
         this->numere_vagoane[i]=numere_vagoane[i];
     }
-    this->ruta=new char[this->dimensiune_ruta+1];
-    strcpy(this->ruta, ruta);
+    this->ruta=std::make_unique<std::string>(ruta);
 }
 
 //Destructorul
 Tren::~Tren(){
     std::cout<<"Destructorul a fost apelat\n";
-    delete[] this->ruta;
     delete[] this->numere_vagoane;
 }
 
 //Copy Constructorul
 Tren::Tren(const Tren& vechi){
     std::cout<<"Copy Constructorul a fost apelat\n";
-    this->dimensiune_ruta=vechi.dimensiune_ruta;
     this->nr_vagoane=vechi.nr_vagoane;
     this->numere_vagoane=new int[this->nr_vagoane];
-    this->ruta=new char[this->dimensiune_ruta+1];
+    this -> ruta = std::make_unique<std::string>(*(vechi.ruta));
     for(int i=0;i<this->nr_vagoane;i++){
         this->numere_vagoane[i]=vechi.numere_vagoane[i];
     }
-    strcpy(this->ruta, vechi.ruta);
 }
 
 //Move Constructorul
 Tren::Tren(Tren&& vechi){
     std::cout<<"Move Constructorul a fost apelat\n";
-    this->dimensiune_ruta=vechi.dimensiune_ruta;
     this->nr_vagoane=vechi.nr_vagoane;
     this->numere_vagoane=vechi.numere_vagoane;
-    this->ruta=vechi.ruta;
+    this -> ruta = std::make_unique<std::string>(*(vechi.ruta));
     vechi.numere_vagoane=nullptr;
-    vechi.ruta=nullptr;
     vechi.nr_vagoane=0;
-    vechi.dimensiune_ruta=-1;
 }
 
 //Copy assignment
@@ -65,17 +56,12 @@ Tren& Tren::operator=(const Tren& vechi){
     if(this==&vechi) {
         return *this;
     }
-    if(this->dimensiune_ruta != vechi.dimensiune_ruta){
-        this->dimensiune_ruta=vechi.dimensiune_ruta;
-        delete[] this->ruta;
-        this->ruta=new char[this->dimensiune_ruta+1];
-    }
     if(this->nr_vagoane != vechi.nr_vagoane){
         this->nr_vagoane=this->nr_vagoane;
         delete[] this->numere_vagoane;
         this->numere_vagoane=new int[this->nr_vagoane];
     }
-    strcpy(this->ruta,vechi.ruta);
+    *(this->ruta)=*(vechi.ruta);
     for(int i=0;i<this->nr_vagoane;i++){
         this->numere_vagoane[i]=vechi.numere_vagoane[i];
     }
@@ -88,21 +74,17 @@ Tren& Tren::operator=(Tren&& vechi){
     if(this==&vechi) {
         return *this;
     }
-    delete[] this->ruta;
     delete[] this->numere_vagoane;
-    this->dimensiune_ruta=vechi.dimensiune_ruta;
-    this->ruta=vechi.ruta;
+    *(this->ruta)=*(vechi.ruta);
     this->nr_vagoane=vechi.nr_vagoane;
     this->numere_vagoane=vechi.numere_vagoane;
-    vechi.dimensiune_ruta = -1;
     vechi.nr_vagoane = 0;
-    vechi.ruta=nullptr;
     vechi.numere_vagoane=nullptr;
     return *this;
 }
 
 bool Tren::operator==(const Tren& vechi){
-    if( (this->dimensiune_ruta!=vechi.dimensiune_ruta) || (this->nr_vagoane!=this->nr_vagoane) || (strcmp(this->ruta,vechi.ruta) !=0 ) ) {
+    if( (this->nr_vagoane!=this->nr_vagoane) || (*(this->ruta) == *(vechi.ruta)) ) {
         return 0;
     }
 
@@ -168,18 +150,6 @@ bool Tren::adauga_vagon(int numar_vagon){
     return 1;
 }
 
-void Tren::schimba_ruta(char *ruta_noua, int dimensiune_ruta){
-    if(this->ruta==NULL){
-        std::cout<<"Nu se poate schimba ruta, move constructorul a fost apelat pentru acest tren\n";
-        return;
-    }
-    delete[] this->ruta;
-    this->dimensiune_ruta=dimensiune_ruta;
-    this->ruta=new char[this->dimensiune_ruta+1];
-    strcpy(this->ruta, ruta_noua);
-    std::cout<<"Ruta a fost schimbata\n";
-}
-
 bool Tren::sterge_vagon(int numar_vagon){
     if(this->ruta==NULL){
         std::cout<<"Nu se poate sterge vagonul, move constructorul a fost apelat pentru acest tren\n";
@@ -207,7 +177,7 @@ void Tren::afisare(){
         std::cout<<"Move constructorul a fost apelat pentru acest tren\n";
         return;
     }
-    std::cout<<"Trenul circula pe ruta: "<<this->ruta<<"\n";
+    std::cout<<"Trenul circula pe ruta: "<<*(this->ruta)<<"\n";
     std::cout<<"Structura: Locomotiva ";
     for(int i=0;i<this->nr_vagoane;i++){
         std::cout<<" <- "<<this->numere_vagoane[i];

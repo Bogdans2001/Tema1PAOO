@@ -1,5 +1,5 @@
 #include<iostream>
-#include<string.h>
+#include<string>
 #include "tren_calatori.hpp"
 
 using namespace Vehicul;
@@ -13,8 +13,8 @@ Tren_Calatori::Tren_Calatori()
 }
 
 //Constructor
-Tren_Calatori::Tren_Calatori(char *ruta, int dimensiune_ruta, int nr_vagoane, int *numere_vagoane, int nr_calatori, char *confort, int dimensiune_confort) 
-    : Tren::Tren(ruta, dimensiune_ruta, nr_vagoane, numere_vagoane) {
+Tren_Calatori::Tren_Calatori(std::string ruta, int nr_vagoane, int *numere_vagoane, int nr_calatori, char *confort, int dimensiune_confort) 
+    : Tren::Tren(ruta, nr_vagoane, numere_vagoane) {
         this->nr_calatori=nr_calatori;
         this->dimensiune_confort=dimensiune_confort;
         this->confort=new char[this->dimensiune_confort+1];
@@ -130,7 +130,7 @@ void Tren_Calatori::afisare(){
         std::cout<<"Move constructorul a fost apelat pentru acest tren\n";
         return;
     }
-    std::cout<<"Trenul de tip "<<this->confort<<" circula pe ruta: "<<this->ruta<<" avand un numar de "<<this->nr_calatori<<" calatori\n";
+    std::cout<<"Trenul de tip "<<this->confort<<" circula pe ruta: "<<*(this->ruta)<<" avand un numar de "<<this->nr_calatori<<" calatori\n";
     std::cout<<"Structura: Locomotiva ";
     for(int i=0;i<this->nr_vagoane;i++){
         std::cout<<" <- "<<this->numere_vagoane[i];

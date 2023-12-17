@@ -1,4 +1,5 @@
 #include "tren.hpp"
+#include <cstring>
 namespace Vehicul{
     class Tren_Calatori: public Tren {
         private:
@@ -7,7 +8,7 @@ namespace Vehicul{
             char *confort;
         public: 
             Tren_Calatori();
-            Tren_Calatori(char *ruta, int dimensiune_ruta, int nr_vagoane, int *numere_vagoane, int nr_calatori, char *confort, int dimensiune_confort);
+            Tren_Calatori(std::string ruta, int nr_vagoane, int *numere_vagoane, int nr_calatori, char *confort, int dimensiune_confort);
             Tren_Calatori(const Tren_Calatori& vechi);
             Tren_Calatori(Tren_Calatori&& vechi);
             ~Tren_Calatori();
