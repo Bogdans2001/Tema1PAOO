@@ -22,7 +22,7 @@ class Tren
         bool parcurgere();
     public:
         Tren();
-        Tren(std::string ruta, int nr_vagoane, Numar_transport *numere_vagoane);
+        Tren(std::string ruta, Numar_transport *numere_vagoane);
         virtual ~Tren();
         void adauga_vagon(Numar_transport node_values);
         void sterge_vagon(int node_value);

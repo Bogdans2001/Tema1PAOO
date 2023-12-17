@@ -11,7 +11,7 @@ Tren::Tren(){
 }
 
 //Constructorul
-Tren::Tren(std::string ruta, int nr_vagoane, Numar_transport *numere_vagoane){
+Tren::Tren(std::string ruta, Numar_transport *numere_vagoane){
     std::cout<<"Constructorul a fost apelat\n";
     this->nr_vagoane=nr_vagoane;
     this->numere_vagoane=std::make_shared<Numar_vagon>();
