@@ -1,30 +1,33 @@
-#pragma once
-#include "VehiculeSine.hpp"
+#include <memory>
 
-namespace Vehicul{
-    class Tren : VehiculSine
-    {
-        protected:
-            int dimensiune_ruta;
-            char *ruta;
-            int nr_vagoane;
-            int *numere_vagoane;
-            bool find(int numar_vagon);
-            bool find_sterge(int numar_vagon);
-        public:
-            Tren();
-            Tren(char *ruta, int dimensiune_ruta, int nr_vagoane, int *numere_vagoane);
-            Tren(const Tren& vechi);
-            Tren(Tren&& tren);
-            Tren& operator=(const Tren& vechi);
-            Tren& operator=(Tren&& vechi);
-            bool operator==(const Tren& vechi);
-            virtual ~Tren();
-            bool adauga_vagon(int numar_vagon);
-            bool sterge_vagon(int numar_vagon);
-            virtual void adauga_vagon_personalizat(int numar_vagon, int cantitate_vagon)=0;
-            void schimba_ruta(char *ruta_noua, int dimensiune_ruta);
-            virtual void sterge_vagon_personalizat(int numar_vagon, int cantitate_vagon)=0;
-            virtual void afisare();
-    };
-}
+
+typedef struct Numar_vagon{
+            int numar_vagon;
+            int numar_transport;
+            std::shared_ptr<struct Numar_vagon> next;
+        }Numar_vagon;
+    
+typedef struct Numar_transport{
+    int numar_vagon;
+    int numar_transport;
+}Numar_transport;
+
+class Tren
+{
+    protected:
+        int nr_vagoane; 
+        std::unique_ptr<std::string> ruta;
+        std::shared_ptr<Numar_vagon> numere_vagoane;
+        bool find(int numar_vagon);
+        bool parcurgere();
+    public:
+        Tren();
+        Tren(std::string ruta, int nr_vagoane, Numar_transport *numere_vagoane);
+        Tren(const Tren& vechi);
+        virtual ~Tren();
+        int calculeaza_transport();
+        void parcurgere_copy(std::shared_ptr<Numar_vagon> old);
+        void adauga_vagon(Numar_transport node_values);
+        void sterge_vagon(int node_value);
+        virtual void afisare();
+};

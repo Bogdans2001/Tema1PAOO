@@ -1,216 +1,148 @@
 #include<iostream>
-#include<string.h>
+#include<string>
 #include "tren.hpp"
-
-using namespace Vehicul;
 
 //Constructor no-arg
 Tren::Tren(){
-    std::cout<<"Constructorul no-arg a fost apelat\n";
-    this->dimensiune_ruta=-1;
-    this->ruta=nullptr;
-    this->numere_vagoane=nullptr;
+    this->ruta=std::make_unique<std::string>();
+    this->numere_vagoane=std::make_shared<Numar_vagon>();
     this->nr_vagoane=0;
 }
 
 //Constructorul
-Tren::Tren(char *ruta, int dimensiune_ruta, int nr_vagoane, int *numere_vagoane){
-    std::cout<<"Constructorul a fost apelat\n";
+Tren::Tren(std::string ruta, int nr_vagoane, Numar_transport *numere_vagoane){
     this->nr_vagoane=nr_vagoane;
-    this->dimensiune_ruta=dimensiune_ruta;
-    this->numere_vagoane=new int[this->nr_vagoane];
+    this->numere_vagoane=std::make_shared<Numar_vagon>();
     for(int i=0;i<this->nr_vagoane;i++){
-        this->numere_vagoane[i]=numere_vagoane[i];
+        adauga_vagon(numere_vagoane[i]);
     }
-    this->ruta=new char[this->dimensiune_ruta+1];
-    strcpy(this->ruta, ruta);
+    this->ruta=std::make_unique<std::string>(ruta);
 }
+
+Tren::Tren(const Tren& vechi){
+    this->nr_vagoane = vechi.nr_vagoane;
+    this->ruta=std::make_unique<std::string>(*(vechi.ruta));
+    parcurgere_copy(vechi.numere_vagoane);
+}
+
 
 //Destructorul
 Tren::~Tren(){
-    std::cout<<"Destructorul a fost apelat\n";
-    delete[] this->ruta;
-    delete[] this->numere_vagoane;
 }
 
-//Copy Constructorul
-Tren::Tren(const Tren& vechi){
-    std::cout<<"Copy Constructorul a fost apelat\n";
-    this->dimensiune_ruta=vechi.dimensiune_ruta;
-    this->nr_vagoane=vechi.nr_vagoane;
-    this->numere_vagoane=new int[this->nr_vagoane];
-    this->ruta=new char[this->dimensiune_ruta+1];
-    for(int i=0;i<this->nr_vagoane;i++){
-        this->numere_vagoane[i]=vechi.numere_vagoane[i];
-    }
-    strcpy(this->ruta, vechi.ruta);
-}
-
-//Move Constructorul
-Tren::Tren(Tren&& vechi){
-    std::cout<<"Move Constructorul a fost apelat\n";
-    this->dimensiune_ruta=vechi.dimensiune_ruta;
-    this->nr_vagoane=vechi.nr_vagoane;
-    this->numere_vagoane=vechi.numere_vagoane;
-    this->ruta=vechi.ruta;
-    vechi.numere_vagoane=nullptr;
-    vechi.ruta=nullptr;
-    vechi.nr_vagoane=0;
-    vechi.dimensiune_ruta=-1;
-}
-
-//Copy assignment
-Tren& Tren::operator=(const Tren& vechi){
-    std::cout<<"Copy assignment a fost apelat\n";
-    if(this==&vechi) {
-        return *this;
-    }
-    if(this->dimensiune_ruta != vechi.dimensiune_ruta){
-        this->dimensiune_ruta=vechi.dimensiune_ruta;
-        delete[] this->ruta;
-        this->ruta=new char[this->dimensiune_ruta+1];
-    }
-    if(this->nr_vagoane != vechi.nr_vagoane){
-        this->nr_vagoane=this->nr_vagoane;
-        delete[] this->numere_vagoane;
-        this->numere_vagoane=new int[this->nr_vagoane];
-    }
-    strcpy(this->ruta,vechi.ruta);
-    for(int i=0;i<this->nr_vagoane;i++){
-        this->numere_vagoane[i]=vechi.numere_vagoane[i];
-    }
-    return *this;
-}
-
-//Move assignment
-Tren& Tren::operator=(Tren&& vechi){
-    std::cout<<"Move assignment a fost apelat\n";
-    if(this==&vechi) {
-        return *this;
-    }
-    delete[] this->ruta;
-    delete[] this->numere_vagoane;
-    this->dimensiune_ruta=vechi.dimensiune_ruta;
-    this->ruta=vechi.ruta;
-    this->nr_vagoane=vechi.nr_vagoane;
-    this->numere_vagoane=vechi.numere_vagoane;
-    vechi.dimensiune_ruta = -1;
-    vechi.nr_vagoane = 0;
-    vechi.ruta=nullptr;
-    vechi.numere_vagoane=nullptr;
-    return *this;
-}
-
-bool Tren::operator==(const Tren& vechi){
-    if( (this->dimensiune_ruta!=vechi.dimensiune_ruta) || (this->nr_vagoane!=this->nr_vagoane) || (strcmp(this->ruta,vechi.ruta) !=0 ) ) {
-        return 0;
-    }
-
-    for(int i=0;i<this->nr_vagoane;i++) {
-        if(this->numere_vagoane[i] != vechi.numere_vagoane[i]) {
-            return 0;
+void Tren::parcurgere_copy(std::shared_ptr<Numar_vagon> old){
+    std::shared_ptr<Numar_vagon> p1;
+    this->numere_vagoane=std::make_shared<Numar_vagon>();
+    p1=this->numere_vagoane;
+    while(old != nullptr){
+        p1->numar_vagon = old->numar_vagon;
+        p1->numar_transport = old->numar_transport;
+        if(old->next != nullptr) {
+            p1->next=std::make_shared<Numar_vagon>();
         }
-    }
-    return 1;
-}
-
-bool Tren::find(int numar_vagon) {
-    bool check=0;
-    for(int i=0;i<this->nr_vagoane;i++){
-        if(numar_vagon==this->numere_vagoane[i]){
-            check=1;
-            break;
+        else {
+            p1->next = nullptr;
         }
+        old = old->next;
+        p1=p1->next;
     }
-    return check;
 }
 
-//cautam o valoare in vector, daca o gasim, o mutam la final, functia va ajuta in cadrul metodei sterge_vagon
-//Va fi mai usor de sters vagonul daca se afla pe ultima pozitie
-bool Tren::find_sterge(int numar_vagon){
-    int aux,poz;
-    bool check=0;
-    for(int i=0;i<this->nr_vagoane;i++){
-        if(numar_vagon==this->numere_vagoane[i]) {
-            check=1;
-            poz=i;
-            break;
+
+bool Tren::parcurgere(){
+    std::shared_ptr<Numar_vagon> p;
+    p = this->numere_vagoane;
+    while(p != nullptr){
+        std::cout<<" <- ("<<p->numar_vagon<<" <- " << p->numar_transport<<") ";
+        p=p->next;
+    }
+    return 0;
+}
+
+
+int Tren::calculeaza_transport(){
+    std::shared_ptr<Numar_vagon> p = this->numere_vagoane;
+    int s=0;
+    while(p != nullptr){
+        s=s+p->numar_transport;
+        p=p->next;
+    }
+    return s;
+}
+
+bool Tren::find(int vagon) {
+    std::shared_ptr<Numar_vagon> p;
+    p=this->numere_vagoane;
+    while(p != nullptr){
+        if(p->numar_vagon==vagon){
+            return 1;
         }
+        p=p->next;
     }
-    if(check==0) return check;
-    for(int i=poz;i<this->nr_vagoane-1;i++){
-        this->numere_vagoane[i]=this->numere_vagoane[i+1];
-    }
-    this->numere_vagoane[this->nr_vagoane-1]=numar_vagon;
-    return check;
+    return 0;
 }
 
-bool Tren::adauga_vagon(int numar_vagon){
-    if(this->ruta==NULL){
-        std::cout<<"Nu se poate adauga vagonul, move constructorul a fost apelat pentru acest tren\n";
-        return 0;
-    }
-    bool check;
-    check=find(numar_vagon);
-    if(check) {
-        std::cout<<"Vagonul cu numarul "<<numar_vagon<<" exista deja\n";
-        return 0;
-    }
-    int *aux=new int[this->nr_vagoane+1];
-    for(int i=0;i<this->nr_vagoane;i++){
-        aux[i]=this->numere_vagoane[i];
-    }
-    delete[] this->numere_vagoane;
-    aux[this->nr_vagoane]=numar_vagon;
-    this->numere_vagoane=aux;
-    this->nr_vagoane++;
-    std::cout<<"Vagonul "<<numar_vagon<<" a fost adaugat\n";
-    return 1;
-}
 
-void Tren::schimba_ruta(char *ruta_noua, int dimensiune_ruta){
-    if(this->ruta==NULL){
-        std::cout<<"Nu se poate schimba ruta, move constructorul a fost apelat pentru acest tren\n";
+void Tren::adauga_vagon(Numar_transport node_values){
+    std::shared_ptr<Numar_vagon> p = this->numere_vagoane;
+    std::shared_ptr<Numar_vagon> node = std::make_shared<Numar_vagon>();
+    if(find(node_values.numar_vagon)){
+        std::cout<< "Vagonul exista\n";
         return;
     }
-    delete[] this->ruta;
-    this->dimensiune_ruta=dimensiune_ruta;
-    this->ruta=new char[this->dimensiune_ruta+1];
-    strcpy(this->ruta, ruta_noua);
-    std::cout<<"Ruta a fost schimbata\n";
+    node->numar_vagon = node_values.numar_vagon;
+    node->numar_transport = node_values.numar_transport;
+    node->next=nullptr;
+    if(p->numar_vagon==0) {
+        this->numere_vagoane = node;
+        return;
+    }
+    while(p->next != nullptr){
+        p=p->next;
+    }
+    p->next=node;
 }
 
-bool Tren::sterge_vagon(int numar_vagon){
-    if(this->ruta==NULL){
-        std::cout<<"Nu se poate sterge vagonul, move constructorul a fost apelat pentru acest tren\n";
-        return 0;
+void Tren::sterge_vagon(int node_value){
+    std::shared_ptr<Numar_vagon> p;
+    std::shared_ptr<Numar_vagon> q;
+    p = this->numere_vagoane;
+    q = p->next;
+
+    if(!find(node_value)){
+        std::cout<< "Vagonul nu exista\n";
+        return;
     }
-    bool checked=find_sterge(numar_vagon);
-    if(checked==0) {
-        std::cout<<"Vagonul "<<numar_vagon<<" nu exista\n";
-        return 0;
+
+    if(!p) {
+        return;
     }
-    this->nr_vagoane--;
-    int *aux;
-    aux=new int[this->nr_vagoane];
-    for(int i=0;i<this->nr_vagoane;i++){
-        aux[i]=this->numere_vagoane[i];
+
+    if(!q) {
+        this->numere_vagoane = nullptr;
+
+        return;
     }
-    delete[] this->numere_vagoane;
-    this->numere_vagoane=aux;
-    std::cout<<"Vagonul "<<numar_vagon<<" a fost sters\n";
-    return 1;
+
+    if(p->numar_vagon == node_value){
+        this->numere_vagoane=q;
+
+        return;
+    }
+
+    while(q != nullptr){
+        if(q->numar_vagon == node_value) {
+            p->next = q->next;
+            break;
+        }
+        p=q;
+        q=q->next;
+    }
 }
 
 void Tren::afisare(){
-    if(this->ruta==NULL){
-        std::cout<<"Move constructorul a fost apelat pentru acest tren\n";
-        return;
-    }
-    std::cout<<"Trenul circula pe ruta: "<<this->ruta<<"\n";
+    std::cout<<"Trenul circula pe ruta: "<<*(this->ruta)<<"\n";
     std::cout<<"Structura: Locomotiva ";
-    for(int i=0;i<this->nr_vagoane;i++){
-        std::cout<<" <- "<<this->numere_vagoane[i];
-    }
+    parcurgere();
     std::cout<<"\n";
 }

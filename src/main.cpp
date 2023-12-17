@@ -1,71 +1,111 @@
 #include<iostream>
-#include<string.h>
+#include<string>
+#include<memory>
+#include<vector>
+#include<mutex>
+#include<barrier>
+#include<thread>
+#include<array>
 #include "tren.hpp"
-#include "tren_calatori.hpp"
-#include "tren_marfa.hpp"
+
+int numar_cutii, s[100], s_total;
+std::string ruta1 = "Bucuresti-Timisoara";
+std::string ruta2 = "Bucuresti-Constanta";
+std::string ruta3 = "Timisoara-Cluj";
+Numar_transport numere_vagoane1[]={ {434, 80} , {433, 79}, {4, 78},{3, 77},{2, 76},{1, 75}}, 
+                numere_vagoane2[]={ {1, 82}, {2, 83}, {3, 85}, {4, 87}},
+                numere_vagoane3[]={ {2, 82}, {3, 83}, {4, 85}, {5, 87}},
+                numere_vagoane4[]={ {3, 82}, {4, 83}, {5, 85}, {6, 87}},
+                numere_vagoane5[]={ {4, 82}, {5, 83}, {6, 85}, {7, 87}},
+                numere_vagoane6[]={ {5, 82}, {6, 83}, {7, 85}, {8, 87}},
+                numere_vagoane7[]={ {6, 82}, {7, 83}, {8, 85}, {9, 87}, {10,77}, {11, 78}},
+                numere_vagoane8[]={ {434, 80} , {433, 79}, {4, 78},{3, 77},{2, 76},{1, 75}},
+                numere_vagoane9[]={ {433, 80} , {432, 79}, {4, 78},{3, 77},{2, 76},{1, 75}},
+                numere_vagoane10[]={ {431, 80} , {430, 79}, {4, 78},{3, 77},{2, 76},{1, 75}},
+                numere_vagoane11[]={ {435, 80} , {434, 79}, {4, 78},{3, 77},{2, 76},{1, 75}};
+
+
+int lista_vagoane[] = {433, 1, 3, 4, 7};
+
+const auto nr_threads = std::thread::hardware_concurrency();
+
+std::barrier my_barrier(nr_threads);
+
+std::vector<Tren> tren = {
+        Tren(ruta1, 6, numere_vagoane1),
+        Tren(ruta2, 4, numere_vagoane2),
+        Tren(ruta3, 4, numere_vagoane3),
+        Tren(ruta1, 4, numere_vagoane4),
+        Tren(ruta2, 4, numere_vagoane5),
+        Tren(ruta3, 4, numere_vagoane6),
+        Tren(ruta1, 6, numere_vagoane7),
+        Tren(ruta2, 6, numere_vagoane8),
+        Tren(ruta3, 6, numere_vagoane9),
+        Tren(ruta1, 6, numere_vagoane10),
+        Tren(ruta2, 6, numere_vagoane11)
+    };
+
+std::mutex my_mutex;
+
+void sterge_actualizeaza(int i, int length, int *lista_vagoane, int length_lista){
+    int start, end;
+    start=i*length/nr_threads;
+    end = (i+1)*length/nr_threads;
+    for(int k=start;k<end;k++){
+        for(int p=0;p<length_lista;p++){
+            tren[k].sterge_vagon(lista_vagoane[p]);
+        }
+    }
+
+    for(int k=start;k<end;k++){
+        s[k]=tren[k].calculeaza_transport();
+        std::cout<<"Thread "<<i<<" Trenul "<<k<<" transporta "<<s[k]<<" cutii\n";
+    }
+
+    int maxx=0;
+    for(int k=start; k<end; k++){
+        if(s[k]>maxx) {
+            maxx=s[k];
+        }
+    }
+
+    my_barrier.arrive_and_wait();
+
+    std::cout<<"Nr_max de cutii pentru thread-ul "<<i<<" este "<<maxx<<"\n";
+
+    for(int k=start; k<end;k++){
+        std::lock_guard<std::mutex> guard(my_mutex);
+        s_total=s_total+s[k];
+    }
+}
 
 int main(){
-    char ruta1[]="Bucuresti-Timisoara", ruta2[]="Bucuresti-Constanta", ruta3[]="Timisoara-Cluj";
-    char produs1[]="mere", produs2[]="pere", produs3[]="prune";
-    char confort1[]="Rapid", confort2[]="Personal", confort3[]="Accelerat";
-    int dimensiune1=19, dimensiune2=19, dimensiune3=14;
-    int numere_vagoane1[]={434,433,4,3,2,1}, numere_vagoane2[]={1,2,3,4};
-    int nr_vagoane1=6, nr_vagoane2=4;
+    std::vector<std::thread> threads(nr_threads);
 
-    std::cout<<"\n\nConstructorii subclasei tren_marfa:\n\n";
+    Tren tren1(ruta2, 4, numere_vagoane2);
+    Tren tren2(tren1);
+    tren1.afisare();
+    tren2.afisare();
+    tren2.sterge_vagon(1);
+    tren2.afisare();
+    std::cout<<tren2.calculeaza_transport();
 
+    std::cout<<"\n\n\n\nMutex si bariera\n\n\n\n";
 
-    Vehicul::Tren_Marfa tren_marfa4;
-    Vehicul::Tren_Marfa tren_marfa1=Vehicul::Tren_Marfa(ruta1, dimensiune1, nr_vagoane1, numere_vagoane1, 100, produs1, 4);
-    tren_marfa1.afisare();
-    Vehicul::Tren_Marfa tren_marfa2=Vehicul::Tren_Marfa(tren_marfa1);
-    tren_marfa2.afisare();
-    Vehicul::Tren_Marfa tren_marfa3=Vehicul::Tren_Marfa(ruta2, dimensiune2, nr_vagoane1, numere_vagoane1, 200, produs2, 4);
-    tren_marfa3.afisare();
-    tren_marfa1=tren_marfa3;
-    tren_marfa3.afisare();
-    tren_marfa4=Vehicul::Tren_Marfa(ruta3, dimensiune3, nr_vagoane1, numere_vagoane1, 250, produs3, 5);
-    tren_marfa4.afisare();
+    int length=0,length_lista=0;
+    for(Tren& iterator : tren){
+        length++;
+    }
+    for(int x: lista_vagoane){
+        length_lista++;
+    }
+    for(int i=0;i<nr_threads;i++){
+        threads[i]=std::thread(sterge_actualizeaza, i, length, lista_vagoane, length_lista);
+    }
 
-
-    std::cout<<"\n\nFunctiile subclasei tren_marfa:\n\n";
-
-
-    tren_marfa4.adauga_vagon_personalizat(6,10);
-    tren_marfa4.afisare();
-    tren_marfa4.schimba_ruta(ruta1, dimensiune1);
-    tren_marfa4.afisare();
-    tren_marfa4.schimba_produs(produs1, 4);
-    tren_marfa4.afisare();
-    tren_marfa4.sterge_vagon_personalizat(6,10);
-    tren_marfa4.afisare();
-
-    std::cout<<"\n\nConstructorii subclasei tren_calatori:\n\n";
-
-
-    Vehicul::Tren_Calatori tren_calatori4;
-    Vehicul::Tren_Calatori tren_calatori1=Vehicul::Tren_Calatori(ruta1, dimensiune1, nr_vagoane1, numere_vagoane1, 100, confort1, 5);
-    tren_calatori1.afisare();
-    Vehicul::Tren_Calatori tren_calatori2=Vehicul::Tren_Calatori(tren_calatori1);
-    tren_calatori2.afisare();
-    Vehicul::Tren_Calatori tren_calatori3=Vehicul::Tren_Calatori(ruta2, dimensiune2, nr_vagoane1, numere_vagoane1, 200, confort2, 8);
-    tren_calatori3.afisare();
-    tren_calatori1=tren_calatori3;
-    tren_calatori3.afisare();
-    tren_calatori4=Vehicul::Tren_Calatori(ruta3, dimensiune3, nr_vagoane1, numere_vagoane1, 250, confort3, 9);
-    tren_calatori4.afisare();
-
-
-    std::cout<<"\n\nFunctiile subclasei tren_calatori:\n\n";
-
-
-    tren_calatori4.adauga_vagon_personalizat(6,10);
-    tren_calatori4.afisare();
-    tren_calatori4.schimba_ruta(ruta1, dimensiune1);
-    tren_calatori4.afisare();
-    tren_calatori4.schimba_confort(confort1, 5);
-    tren_calatori4.afisare();
-    tren_calatori4.sterge_vagon_personalizat(6,10);
-    tren_calatori4.afisare();
+    for(int i = 0; i<nr_threads; i++){
+        threads[i].join();
+    }
+    std::cout<<"Numar total de cutii este "<<s_total<<"\n";
     return 0;
 }
